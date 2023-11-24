@@ -30,3 +30,5 @@ func NewEtcdLock(client *v3.Client, key string) (e *EtcdLock, err error) {
 
 	return e, err
 }
+
+// 快
