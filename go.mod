@@ -4,6 +4,9 @@ go 1.18
 
 require (
 	baliance.com/gooxml v1.0.1
+	github.com/jinzhu/copier v0.4.0
+	github.com/mitchellh/copystructure v1.2.0
+	github.com/streadway/amqp v1.1.0
 	github.com/unidoc/unipdf/v3 v3.52.0
 	go.etcd.io/etcd/client/v3 v3.5.9
 )
@@ -15,6 +18,7 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
+	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/sirupsen/logrus v1.5.0 // indirect
 	github.com/stretchr/testify v1.8.1 // indirect
