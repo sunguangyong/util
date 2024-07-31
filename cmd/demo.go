@@ -38,7 +38,7 @@ func product() {
 func main() {
 	topic := "service_request"
 
-	go product()
+	//go product()
 
 	consumerConfig := kafkamq.Config{
 		KqPusherConf: kq.KqConf{
