@@ -1,8 +1,6 @@
 module util
 
-go 1.21
-
-toolchain go1.22.4
+go 1.20
 
 require (
 	baliance.com/gooxml v1.0.1

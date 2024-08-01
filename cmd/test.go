@@ -3,69 +3,18 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"fmt"
+	"sync"
+	"util/pkg/kafkamq"
+
 	"github.com/zeromicro/go-queue/kq"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/core/service"
-	"time"
-	"util/pkg/kafkamq"
 )
-
-func product() {
-	ctx := context.Background()
-	topic := "service_request"
-	config := kafkamq.Config{
-		KqPusherConf: kq.KqConf{
-			Topic:   topic,
-			Brokers: []string{"127.0.0.1:9092"},
-		},
-	}
-	kqClient := kafkamq.NewKqClient(config)
-
-	var i int64
-
-	for {
-		i += 1
-		var params IotParams
-		params.Mid = i
-		msg, _ := json.Marshal(params)
-		err := kqClient.KqPusherClient.KPush(ctx, "", string(msg))
-		fmt.Println("err ===", err)
-		time.Sleep(5 * time.Second)
-	}
-}
-
-func main() {
-	topic := "service_request"
-
-	//go product()
-
-	consumerConfig := kafkamq.Config{
-		KqPusherConf: kq.KqConf{
-			Topic:      topic,
-			Brokers:    []string{"127.0.0.1:9092"},
-			Group:      "mala-iot",
-			Offset:     "last",
-			Consumers:  1,
-			Processors: 1,
-		},
-	}
-
-	serviceGroup := service.NewServiceGroup()
-	defer serviceGroup.Stop()
-
-	for _, mq := range Consumers(consumerConfig) {
-		serviceGroup.Add(mq)
-	}
-
-	serviceGroup.Start()
-
-	select {}
-
-}
 
 type IotPlatformProxy struct {
 }
+
+var once sync.Once
 
 type IotParams struct {
 	Mid       int64  `json:"mid"`
@@ -94,22 +43,69 @@ type IotParams struct {
 	} `json:"param"`
 }
 
+type IotUploadResultRequest struct {
+	Mid       int64       `json:"mid"`
+	DeviceId  string      `json:"deviceId"`
+	Type      string      `json:"type"`
+	Timestamp string      `json:"timestamp"`
+	Code      int         `json:"code"`
+	App       string      `json:"app"`
+	Msg       string      `json:"msg"`
+	Param     interface{} `json:"param"`
+}
+
+type IotUploadResultResponse struct {
+	Id     int    `json:"id"`
+	Code   int    `json:"code"`
+	ErrMsg string `json:"errMsg"`
+	Value  struct {
+		Mid int `json:"mid"`
+	} `json:"value"`
+}
+
+// Consume 消费物管平台推送的app端命令
 func (i *IotPlatformProxy) Consume(ctx context.Context, _, value string) error {
 	logx.Infof("Consume msg val: %s", value)
 	var msg *IotParams
 	err := json.Unmarshal([]byte(value), &msg)
 	if err != nil {
-		logx.Errorf("Consume val: %s error: %v", value, err)
+
 		return err
 	}
-
-	fmt.Println("msg ====== ", msg)
-	// 业务处理 开始业务处理
-	return err
+	return nil
 }
 
-func Consumers(config kafkamq.Config) []service.Service {
+func consumers(config kafkamq.Config) []service.Service {
 	return []service.Service{
 		kq.MustNewQueue(config.KqPusherConf, new(IotPlatformProxy)),
 	}
+}
+
+func IotPlatformConsumersStart() {
+	once.Do(func() {
+		topic := "service_request"
+		consumerConfig := kafkamq.Config{
+			KqPusherConf: kq.KqConf{
+				Topic:      topic,
+				Brokers:    []string{"127.0.0.1:9092"},
+				Group:      "mala-iot",
+				Offset:     "last",
+				Consumers:  1,
+				Processors: 1,
+			},
+		}
+
+		serviceGroup := service.NewServiceGroup()
+		defer serviceGroup.Stop()
+
+		for _, mq := range consumers(consumerConfig) {
+			serviceGroup.Add(mq)
+		}
+		serviceGroup.Start()
+	})
+}
+
+func main() {
+	IotPlatformConsumersStart()
+	select {}
 }

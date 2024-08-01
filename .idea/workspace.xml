@@ -5,15 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6ffccf83-f22a-4667-99dc-8ee5777d3efd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/pkg/kafka/config.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/kafka/kafka.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/kafkamq/config.go" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pkg/kafkamq/kafka.go" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/cmd/test.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/cmd/demo.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/demo.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/cmd/malan_iot_demo.go" beforeDir="false" afterPath="$PROJECT_DIR$/cmd/malan_iot_demo.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pkg/rabbitmq.go" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -56,34 +53,35 @@
     <option name="showLibraryContents" value="true" />
     <option name="showMembers" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultGoTemplateProperty": "Go File",
-    "Go Build.go build util.executor": "Debug",
-    "Go Build.go build util/cmd.executor": "Debug",
-    "Go Build.go build util/pkg/kafka.executor": "Debug",
-    "Go Test.TestStruct in util/structutil.executor": "Run",
-    "Go Test.TestStructCopy in util/structutil.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.go.formatter.settings.were.checked": "true",
-    "RunOnceActivity.go.migrated.go.modules.settings": "true",
-    "RunOnceActivity.go.modules.automatic.dependencies.download": "true",
-    "RunOnceActivity.go.modules.go.list.on.any.changes.was.set": "true",
-    "go.import.settings.migrated": "true",
-    "last_opened_file_path": "/Users/sunguangyong/workspace/src/self/util",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultGoTemplateProperty&quot;: &quot;Go File&quot;,
+    &quot;Go Build.go build malan_iot_demo.go.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Build.go build util.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Build.go build util/cmd.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Build.go build util/pkg/kafka.executor&quot;: &quot;Debug&quot;,
+    &quot;Go Test.TestStruct in util/structutil.executor&quot;: &quot;Run&quot;,
+    &quot;Go Test.TestStructCopy in util/structutil.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.formatter.settings.were.checked&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.migrated.go.modules.settings&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.automatic.dependencies.download&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.go.modules.go.list.on.any.changes.was.set&quot;: &quot;true&quot;,
+    &quot;go.import.settings.migrated&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;/Users/sunguangyong/workspace/src/self/util&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;
   }
-}]]></component>
-  <component name="RunManager" selected="Go Build.go build util/cmd">
-    <configuration name="go build util" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
+}</component>
+  <component name="RunManager" selected="Go Build.go build malan_iot_demo.go">
+    <configuration name="go build malan_iot_demo.go" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
       <module name="util" />
       <working_directory value="$PROJECT_DIR$" />
-      <kind value="PACKAGE" />
+      <kind value="FILE" />
       <package value="util" />
       <directory value="$PROJECT_DIR$" />
-      <filePath value="$PROJECT_DIR$/main.go" />
+      <filePath value="$PROJECT_DIR$/cmd/malan_iot_demo.go" />
       <method v="2" />
     </configuration>
     <configuration name="go build util/cmd" type="GoApplicationRunConfiguration" factoryName="Go Application" temporary="true" nameIsGenerated="true">
@@ -130,11 +128,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Go Build.go build malan_iot_demo.go" />
         <item itemvalue="Go Build.go build util/cmd" />
         <item itemvalue="Go Build.go build util/pkg/kafka" />
         <item itemvalue="Go Test.TestStruct in util/structutil" />
         <item itemvalue="Go Test.TestStructCopy in util/structutil" />
-        <item itemvalue="Go Build.go build util" />
       </list>
     </recent_temporary>
   </component>

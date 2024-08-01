@@ -87,11 +87,14 @@ func main() {
 }
 
 func addResult(c *gin.Context) {
-	var params appRequest
-	c.ShouldBindJSON(&params)
-	body, _ := json.Marshal(&params)
+	//var params appRequest
+	//c.ShouldBindJSON(&params)
+	//body, _ := json.Marshal(&params)
 	// 将数据推送到mqtt
-	mqClient.Write("iot/app/sub", string(body))
+	buf := make([]byte, 1024)
+	n, _ := c.Request.Body.Read(buf)
+	fmt.Println("body ======= ", string(buf[0:n]))
+	mqClient.Write("iot/app/sub", string(buf[0:n]))
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Hello, Gin!",
@@ -100,7 +103,6 @@ func addResult(c *gin.Context) {
 
 func MqProxy(client MQTT.Client, message MQTT.Message) {
 	ctx := context.Background()
-	fmt.Printf("Received message: %s\n", message.Payload())
 	iotParams := new(IotParams)
 	json.Unmarshal(message.Payload(), iotParams)
 	fmt.Println(iotParams)
@@ -109,6 +111,7 @@ func MqProxy(client MQTT.Client, message MQTT.Message) {
 	if err != nil {
 		fmt.Println("err kafka", err)
 	}
+	fmt.Println("推送成功")
 }
 
 func NewKqClient() kafkamq.KafkaClient {
