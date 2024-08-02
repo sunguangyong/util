@@ -6,6 +6,8 @@ import (
 	"fmt"
 	MQTT "github.com/eclipse/paho.mqtt.golang"
 	"github.com/zeromicro/go-queue/kq"
+	"io"
+	"log"
 	"net/http"
 	"util/pkg/kafkamq"
 	"util/pkg/mqtt"
@@ -91,10 +93,16 @@ func addResult(c *gin.Context) {
 	//c.ShouldBindJSON(&params)
 	//body, _ := json.Marshal(&params)
 	// 将数据推送到mqtt
-	buf := make([]byte, 1024)
-	n, _ := c.Request.Body.Read(buf)
-	fmt.Println("body ======= ", string(buf[0:n]))
-	mqClient.Write("iot/app/sub", string(buf[0:n]))
+
+	body, err := io.ReadAll(c.Request.Body)
+	if err != nil {
+		// 处理错误
+		log.Fatal(err)
+	}
+
+	fmt.Println("body ======= ", string(body))
+	fmt.Println("len ======= ", len(body))
+	mqClient.Write("iot/app/sub", string(body))
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Hello, Gin!",

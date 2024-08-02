@@ -1,111 +1,96 @@
 package main
 
 import (
-	"context"
-	"encoding/json"
-	"sync"
-	"util/pkg/kafkamq"
-
-	"github.com/zeromicro/go-queue/kq"
-	"github.com/zeromicro/go-zero/core/logx"
-	"github.com/zeromicro/go-zero/core/service"
+	"bytes"
+	"fmt"
+	"io/ioutil"
+	"mime/multipart"
+	"net/http"
 )
 
-type IotPlatformProxy struct {
-}
-
-var once sync.Once
-
-type IotParams struct {
-	Mid       int64  `json:"mid"`
-	Type      string `json:"type"`
-	Expire    int    `json:"expire"`
-	App       string `json:"app"`
-	Timestamp string `json:"timestamp"`
-	DeviceId  string `json:"deviceId"`
-	Param     struct {
-		Method string `json:"method"`
-		Paras  struct {
-			Payload map[string]interface {
-			} `json:"payload"`
-			ExtendParam struct {
-				Token       string `json:"token"`
-				Url         string `json:"url"`
-				ContentType string `json:"contentType"`
-				FileValue   struct {
-					FileName string `json:"fileName"`
-					FileSize string `json:"fileSize"`
-					FilePath string `json:"filePath"`
-					FileMd5  string `json:"fileMd5"`
-				} `json:"fileValue"`
-			} `json:"extendParam"`
-		} `json:"paras"`
-	} `json:"param"`
-}
-
-type IotUploadResultRequest struct {
-	Mid       int64       `json:"mid"`
-	DeviceId  string      `json:"deviceId"`
-	Type      string      `json:"type"`
-	Timestamp string      `json:"timestamp"`
-	Code      int         `json:"code"`
-	App       string      `json:"app"`
-	Msg       string      `json:"msg"`
-	Param     interface{} `json:"param"`
-}
-
-type IotUploadResultResponse struct {
-	Id     int    `json:"id"`
-	Code   int    `json:"code"`
-	ErrMsg string `json:"errMsg"`
-	Value  struct {
-		Mid int `json:"mid"`
-	} `json:"value"`
-}
-
-// Consume 消费物管平台推送的app端命令
-func (i *IotPlatformProxy) Consume(ctx context.Context, _, value string) error {
-	logx.Infof("Consume msg val: %s", value)
-	var msg *IotParams
-	err := json.Unmarshal([]byte(value), &msg)
+func PostFormData(url string, fileName string, fileContent []byte) {
+	method := "POST"
+	// Mock file content (replace with your actual file content)
+	// Prepare the payload
+	payload := &bytes.Buffer{}
+	writer := multipart.NewWriter(payload)
+	// Create form file field
+	part, err := writer.CreateFormFile("file", fileName)
 	if err != nil {
-
-		return err
+		fmt.Println("Error creating form file:", err)
+		return
 	}
-	return nil
+	// Write file content to part
+	_, err = part.Write(fileContent)
+	if err != nil {
+		fmt.Println("Error writing file content:", err)
+		return
+	}
+	// Close the writer
+	err = writer.Close()
+	if err != nil {
+		fmt.Println("Error closing writer:", err)
+		return
+	}
+	// Create HTTP request
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, payload)
+	if err != nil {
+		fmt.Println("Error creating request:", err)
+		return
+	}
+	// Set Content-Type header
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	// Send the request
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Error sending request:", err)
+		return
+	}
+	defer res.Body.Close()
+	// Read the response body
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println("Error reading response:", err)
+		return
+	}
+	fmt.Println("Response:", string(body))
 }
 
-func consumers(config kafkamq.Config) []service.Service {
-	return []service.Service{
-		kq.MustNewQueue(config.KqPusherConf, new(IotPlatformProxy)),
+func Get() (body []byte, err error) {
+	url := "http://172.10.40.63:30085/v1/image/2fGZtimUnvlR1uVaYiPmMkI8zMU/d4ddd8172ea9bcdfcde623d5a99ca11d"
+	method := "GET"
+
+	client := &http.Client{}
+	req, err := http.NewRequest(method, url, nil)
+
+	if err != nil {
+		fmt.Println(err)
+		return
 	}
-}
+	res, err := client.Do(req)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer res.Body.Close()
 
-func IotPlatformConsumersStart() {
-	once.Do(func() {
-		topic := "service_request"
-		consumerConfig := kafkamq.Config{
-			KqPusherConf: kq.KqConf{
-				Topic:      topic,
-				Brokers:    []string{"127.0.0.1:9092"},
-				Group:      "mala-iot",
-				Offset:     "last",
-				Consumers:  1,
-				Processors: 1,
-			},
-		}
-
-		serviceGroup := service.NewServiceGroup()
-		defer serviceGroup.Stop()
-
-		for _, mq := range consumers(consumerConfig) {
-			serviceGroup.Add(mq)
-		}
-		serviceGroup.Start()
-	})
+	body, err = ioutil.ReadAll(res.Body)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	return body, nil
 }
 
 func main() {
-	IotPlatformConsumersStart()
-	select {}
+	url := "http://121.91.171.184:8989/upload/mintklub/meta"
+	fmt.Println("url === ", url)
+	fineName := "/Users/sunguangyong/Desktop/test.txt"
+	data, err := ioutil.ReadFile(fineName)
+	if err != nil {
+		fmt.Println("err ==== ", err)
+	}
+	fmt.Println("lllll", string(data))
+	PostFormData(url, data)
 }
